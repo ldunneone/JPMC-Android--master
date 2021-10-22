@@ -11,7 +11,7 @@ import com.luke.codejpmc.R
 import com.luke.codejpmc.database.DatabaseAlbum
 import com.luke.codejpmc.databinding.ListItemBinding
 
-class AlbumsAdapter : RecyclerView.Adapter<AlbumsViewHolder>() {
+class AlbumsAdapter(private val onItemClicked:(DatabaseAlbum) ->Unit ) : RecyclerView.Adapter<AlbumsViewHolder>() {
 
     var result: List<DatabaseAlbum> = emptyList()
         set(value) {
@@ -33,6 +33,10 @@ class AlbumsAdapter : RecyclerView.Adapter<AlbumsViewHolder>() {
     override fun onBindViewHolder(holder: AlbumsViewHolder, position: Int) {
         holder.viewDataBinding.also{
             it.result = result[position]
+        }
+
+        holder.itemView.setOnClickListener {
+            onItemClicked( result[position])
         }
     }
 

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.luke.codejpmc.R
@@ -18,7 +19,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
 
-    private var viewModelAdapter: AlbumsAdapter? = null
+    private  lateinit var viewModelAdapter: AlbumsAdapter
     private val viewModel by viewModel<MainViewModel>()
 
     override fun onCreateView(
@@ -28,7 +29,9 @@ class MainFragment : Fragment() {
         val binding: MainFragmentBinding = DataBindingUtil.inflate(inflater,R.layout.main_fragment,container,false)
         binding.setLifecycleOwner (viewLifecycleOwner)
         binding.viewmodel = viewModel
-        viewModelAdapter = AlbumsAdapter()
+        viewModelAdapter = AlbumsAdapter() {
+            navigateToAlbumDetails(album = it)
+        }
 
         binding.root.findViewById<RecyclerView>(R.id.rvAlbums).apply {
             layoutManager = LinearLayoutManager(context)
@@ -43,6 +46,11 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpObserver()
 
+    }
+
+    private fun navigateToAlbumDetails(album:DatabaseAlbum) {
+        findNavController().navigate(R.id.action_mainFragment_to_albumDetailFragment,
+            Bundle().apply { putInt("albumId",album.id) })
     }
 
     private fun setUpObserver() {
